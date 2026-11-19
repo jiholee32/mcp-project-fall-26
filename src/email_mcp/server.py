@@ -67,13 +67,18 @@ def get_email(id: int) -> Email:
     # TODO 2: look up the email with this id and return it.
     # search_emails above is your model: it checks its input, raises a
     # ToolError when it cannot answer, and returns what the store gives it.
+
     # Hint 1: store.get(id) returns the email, or None when no email has
     #         that id.
     # Hint 2: if there is no email, raise
     #         ToolError(f"No email found for ID {id}.")
     #         Use that exact message; the tests check it.
     # Hint 3: otherwise, return the email.
-    raise NotImplementedError("TODO 2: fill in get_email in server.py")
+    email = store.get(id)
+    if email is None:
+        raise ToolError(f"No email found for ID {id}.")
+    
+    return email
 
 
 if __name__ == "__main__":
