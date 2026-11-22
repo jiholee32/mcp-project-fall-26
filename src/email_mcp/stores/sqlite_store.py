@@ -77,18 +77,46 @@ class EmailStore:
         # search() above is your model: it writes a query with ? for each
         # value, runs it with self._query, and turns each row into a
         # dictionary.
+
         # Hint 1: select the id, date, sender, to_addrs, cc_addrs, subject
         #         and body columns from the emails table where id = ?, and
         #         run it with self._query(sql, (email_id,)). Always use ?,
         #         never an f-string: SQLite then treats the id as a value,
         #         never as part of the query.
+        sql = """
+            SELECT id, date, sender, to_addrs, cc_addrs, subject, body
+            FROM emails
+            WHERE id = ?
+        """
+        rows = self._query(sql, (email_id,))
+
+
         # Hint 2: if no rows come back, return None.
+        if not rows:
+            return None
+
+
         # Hint 3: otherwise build the dictionary from rows[0] with the keys
         #         id, date, sender, to, cc, subject and body. to_addrs and
         #         cc_addrs hold JSON text; json.loads turns them back into
         #         lists. An empty subject becomes "(no subject)", as in
         #         search().
-        raise NotImplementedError("TODO 3: fill in EmailStore.get in sqlite_store.py")
+        designated_row = rows[0]
+   
+        dict_to_return = {
+            "id": designated_row["id"],
+            "date": designated_row["date"],
+            "sender": designated_row["sender"],
+            "to": json.loads(designated_row["to_addrs"]),
+            "cc": json.loads(designated_row["cc_addrs"]),
+            "subject": designated_row["subject"] or "(no subject)",
+            "body": designated_row["body"]
+        }
+        return dict_to_return
+
+        
+        
+
 
 
 # The file is found from this file's place in the repository
